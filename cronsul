@@ -39,8 +39,10 @@ esac
 
 command=("$@")
 
+splay="0x$(printf "%s/%s" "${task_id}" "${period}" | sha1sum | cut -c1-8)"
+
 # This will be wrong if cron starts our job really late.
-schedule_date="$(( ($(date '+%s') / period) * period ))"
+schedule_date="$(( ($(date '+%s') / period) * period + (splay % period)))"
 
 grab_lock_or_die "$task_id" "$schedule_date" "$period"
 
